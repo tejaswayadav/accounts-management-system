@@ -1,0 +1,66 @@
+version: '3.3'
+services:
+  lra-coordinator:
+    image: jbosstm/lra-coordinator:5.9.5.Final
+    container_name: lra-coordinator
+    environment:
+      - JAVA_OPTIONS=-Djava.net.preferIPv4Stack=true
+    networks:
+      - saga-example
+    ports:
+      - "8080:8080"
+
+  account-orchestration-service:
+    image: ams/account-orchestration-service:001
+    container_name: account-orchestrator-service
+    networks:
+      - saga-example
+    ports:
+      - "5000:5000"
+    depends_on:
+      - lra-coordinator
+
+  accounts-service:
+    image: ams/accounts-service:001
+    container_name: accounts-service
+    networks:
+      - saga-example
+    ports:
+      - "5001:5001"
+    depends_on:
+      - lra-coordinator
+
+  collection-service:
+    image: ams/collection-service:001
+    container_name: collection-service
+    networks:
+      - saga-example
+    ports:
+      - "5002:5002"
+    depends_on:
+      - lra-coordinator
+
+  keys-service:
+    image: ams/keys-service:001
+    container_name: keys-service
+    networks:
+      - saga-example
+    ports:
+      - "5003:5003"
+    depends_on:
+      - lra-coordinator
+
+  engine-service:
+    image: ams/engine-service:001
+    container_name: engine-service
+    networks:
+      - saga-example
+    ports:
+      - "5004:5004"
+    depends_on:
+      - lra-coordinator
+
+networks:
+  saga-example:
+    external:
+      name: saga-example
